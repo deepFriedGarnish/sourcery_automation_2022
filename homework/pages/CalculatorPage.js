@@ -1,3 +1,5 @@
+const { expect } = require('@playwright/test');
+
 class CalculatorPage {
     constructor(page) {
         this.page = page;
@@ -11,12 +13,12 @@ class CalculatorPage {
         await this.page.selectOption('#selectBuild', { label: label});
     }
 
-    async inputOperators(op1, op2) {
-        await this.page.locator('#number1Field').type(op1);
-        await this.page.locator('#number2Field').type(op2);
+    async inputValues(value1, value2) {
+        await this.page.locator('#number1Field').type(value1);
+        await this.page.locator('#number2Field').type(value2);
     }
 
-    async selectOperationDropdown(op) {
+    async selectOperation(op) {
         await this.page.selectOption('#selectOperationDropdown', {label: op});
     }
 
@@ -30,6 +32,19 @@ class CalculatorPage {
 
     async pressClear() {
         await this.page.locator('#clearButton').click();
+    }
+
+    async AssertAnswerValue(expectedValue) {
+        await expect(this.page.locator('#numberAnswerField')).toHaveValue(expectedValue);
+    }
+
+    async AssertErrorMessageText(expectedText){
+        await expect(this.page.locator('#errorMsgField')).toContainText(expectedText);
+        await expect(this.page.locator('#errorMsgField')).not.toBeEmpty();
+    }
+
+    async AssertIntegersOnlyIsEnabled() {
+        await expect(this.page.locator('#integerSelect')).toBeEnabled();
     }
 }
 
